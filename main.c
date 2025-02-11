@@ -65,9 +65,10 @@ float* calculate_time_1d(float time[6],
         // ignores 2nd segment and recalculate 1st and 3rd segments.
         if (S1 + S3 >= displacement/2) {
         //if (S1 + S3 >= displacement/2) {
-            printf("S1+S2 = %f > displacement/2 \n", 2*velocity[0]*time[0]);
-            time[0] = cbrtf( (displacement/2) / jerk_max);
+            printf("S1+S3 = %f > displacement/2 \n", S1 + S3);
+            time[0] = cbrtf((displacement/2) / jerk_max);
             time[1] = 0.0f;
+
         }
         else { // OK!
             time[1] = ( - (3*jerk_max*time[0]*time[0])
@@ -125,12 +126,15 @@ void generate_curve_1d(float time[6],
     int const steps6 = (int) (time[5]/time_delta) + steps5;
     int const steps7 = step_total;
 
+    float const acceleration_peak = time[0]*jerk_max;
+    printf("acceleration_peak = %f \n", acceleration_peak);
+
     float const velocity1 = jerk_max*time[0]*time[0] / 2;
-    float const velocity2 = acceleration_max*time[1] + velocity1;
-    float const velocity3 = acceleration_max*time[2] - jerk_max*time[2]*time[2] / 2 + velocity2;
+    float const velocity2 = acceleration_peak*time[1] + velocity1;
+    float const velocity3 = acceleration_peak*time[2] - jerk_max*time[2]*time[2] / 2 + velocity2;
     float const velocity4 = velocity3;
     float const velocity5 = - jerk_max*time[4]*time[4] / 2 + velocity4;
-    float const velocity6 = - acceleration_max*time[5] + velocity5;
+    float const velocity6 = - acceleration_peak*time[5] + velocity5;
     float const velocity7 = 0.0f;
 
     int step_counter = 0;
@@ -143,7 +147,6 @@ void generate_curve_1d(float time[6],
 
             switch (i){
                 case 0:
-
                     position_curve[step_counter] = (jerk_max / 6) * time_j3;
                     velocity_curve[step_counter] = (jerk_max / 2) * time_j2;
                     acceleration_curve[step_counter] = jerk_max*time_j;
@@ -151,16 +154,16 @@ void generate_curve_1d(float time[6],
 
                     break;
                 case 1:
-                    position_curve[step_counter] = (acceleration_max / 2) * time_j2 +
+                    position_curve[step_counter] = (acceleration_peak / 2) * time_j2 +
                                                    velocity1 * time_j +
                                                    position_curve[steps1];
-                    velocity_curve[step_counter] = acceleration_max * time_j + velocity1;
-                    acceleration_curve[step_counter] = acceleration_max;
+                    velocity_curve[step_counter] = acceleration_peak * time_j + velocity1;
+                    acceleration_curve[step_counter] = acceleration_peak;
                     jerk_curve[step_counter] = 0;
                     break;
                 case 2:
-                    position_curve[step_counter] = (acceleration_max*time_j2)/2 - (jerk_max*time_j3)/6 + velocity2*time_j + position_curve[steps2];
-                    velocity_curve[step_counter] = time_j * (acceleration_max - (jerk_max / 2) * time_j) +
+                    position_curve[step_counter] = (acceleration_peak*time_j2)/2 - (jerk_max*time_j3)/6 + velocity2*time_j + position_curve[steps2];
+                    velocity_curve[step_counter] = time_j * (acceleration_peak - (jerk_max / 2) * time_j) +
                                                    velocity2;
                     acceleration_curve[step_counter] = acceleration_curve[steps2] - jerk_max*time_j;
                     jerk_curve[step_counter] = - jerk_max;
@@ -180,20 +183,20 @@ void generate_curve_1d(float time[6],
                    jerk_curve[step_counter] = -jerk_max;
                     break;
                 case 5:
-                   position_curve[step_counter] = (-acceleration_max / 2) * time_j2 +
+                   position_curve[step_counter] = (-acceleration_peak / 2) * time_j2 +
                                                   velocity5 * time_j +
                                                   position_curve[steps5];
-                   velocity_curve[step_counter] = velocity5 - acceleration_max * time_j;
-                   acceleration_curve[step_counter] = - acceleration_max;
+                   velocity_curve[step_counter] = velocity5 - acceleration_peak * time_j;
+                   acceleration_curve[step_counter] = - acceleration_peak;
                    jerk_curve[step_counter] = 0;
                     break;
                 case 6:
                    position_curve[step_counter] = (jerk_max / 6) * time_j3 -
-                                                  (acceleration_max / 2) * time_j2 +
+                                                  (acceleration_peak / 2) * time_j2 +
                                                   velocity6 * time_j +
                                                   position_curve[steps6];
                    velocity_curve[step_counter] = velocity6 -
-                                                  time_j * (acceleration_max - (jerk_max / 2) * time_j);
+                                                  time_j * (acceleration_peak - (jerk_max / 2) * time_j);
                    acceleration_curve[step_counter] = acceleration_curve[steps6] + jerk_max*time_j;
                    jerk_curve[step_counter] = jerk_max;
                     break;
@@ -238,10 +241,10 @@ int main(int argc, char** argv) {
         jerk_max = strtof(argv[4], NULL);
 //    }
 
-    printf("Displacement is %f m   \n", displacement);
-    printf("Velocity is     %f m/s \n", velocity_max);
-    printf("Acceleration is %f m/s2\n", acceleration_max);
-    printf("Jerk is         %f m/s3\n\n", jerk_max);
+    printf("Displacement is       %f m   \n", displacement);
+    printf("Velocity limit        %f m/s \n", velocity_max);
+    printf("Acceleration limit is %f m/s2\n", acceleration_max);
+    printf("Jerk limit is         %f m/s3\n\n", jerk_max);
 
     calculate_time_1d(time, displacement, velocity_max, acceleration_max, jerk_max);
 
