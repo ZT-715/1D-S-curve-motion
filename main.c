@@ -33,22 +33,24 @@ float* calculate_time_1d(float time[6],
     }
 
     time[2] = time[0];
+    float acceleration_peak = time[0]*jerk_max;
 
     velocity[0] = jerk_max*time[0]*time[0] / 2;
-    velocity[1] = acceleration_max*time[1] + velocity[0];
-    velocity[2] = acceleration_max*time[2] - jerk_max*time[2]*time[2] / 2 + velocity[1];
+    velocity[1] = acceleration_peak*time[1] + velocity[0];
+    velocity[2] = acceleration_peak*time[2] - jerk_max*time[2]*time[2] / 2 + velocity[1];
 
     printf("velocity[0] = %f \n", velocity[0]);
     printf("velocity[1] = %f \n", velocity[1]);
-    printf("velocity[2] = %f \n", velocity[2]); // V2 > limit when 1 0.3 0.5 0.6
+    printf("velocity[2] = %f \n", velocity[2]);
 
 
     S1  = (jerk_max / 6) * time[0] * time[0] * time[0];
-    S2 = (acceleration_max / 2) * time[1] * time[1] + velocity[0] * time[0];
-    S3 = (acceleration_max*time[0]*time[0])/2 - (jerk_max*time[0]*time[0]*time[0])/6 + velocity[1]*time[0];
+    S2 = (acceleration_peak / 2) * time[1] * time[1] + velocity[0] * time[1];
+    S3 = (acceleration_peak*time[0]*time[0])/2 - (jerk_max*time[0]*time[0]*time[0])/6 + velocity[1]*time[0];
 
-    // printf("\n(S1+S3)+S2 = %f+%f = %f \n", 2*velocity[0]*time[0], time[1]*(acceleration_max*time[1]/2 + velocity[0]), 2*velocity[0]*time[0] + time[1]*(acceleration_max*time[1]/2 + velocity[0]));
+    printf("\n(S1+S3)+S2 = %f+%f = %f \n", 2*velocity[0]*time[0], time[1]*(acceleration_max*time[1]/2 + velocity[0]), 2*velocity[0]*time[0] + time[1]*(acceleration_max*time[1]/2 + velocity[0]));
     printf("S1+S2+S3 = %f+%f+%f = %f \n",S1,S2,S3, S1 + S2 + S3);
+    printf("time[0] = %f \nvelocity[0] = %f \n\n", time[0], velocity[0]);
 
 
     if (velocity[0] >= velocity_max/2) {
@@ -64,13 +66,16 @@ float* calculate_time_1d(float time[6],
         // Evaluates if S1 + S3 is greater than half the displacement
         // ignores 2nd segment and recalculate 1st and 3rd segments.
         if (S1 + S3 >= displacement/2) {
-        //if (S1 + S3 >= displacement/2) {
             printf("S1+S3 = %f > displacement/2 \n", S1 + S3);
             time[0] = cbrtf((displacement/2) / jerk_max);
             time[1] = 0.0f;
+            acceleration_peak = time[0]*jerk_max;
 
+            if (acceleration_peak > acceleration_max) {
+                fprintf(stderr, "Acceleration peak %f m*s^-2 greater than limit %f m*s^-2 \n", acceleration_peak, acceleration_max);
+            }
         }
-        else { // OK!
+        else {
             time[1] = ( - (3*jerk_max*time[0]*time[0])
                         + sqrtf(jerk_max*jerk_max*time[0]*time[0]*time[0]*time[0] + 4*jerk_max*time[0]*displacement)
                       ) / (2*jerk_max*time[0]);
