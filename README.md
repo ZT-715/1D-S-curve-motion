@@ -49,31 +49,28 @@ Total time is 3.166667
 
 ## Tests
 
-To cover 100% of the code, 4 diferent inputs are required based on the flow chart.
+To cover 100% of the code, 4 different inputs are required based on the flow chart.
 The tests may be executed with ```./test.sh``` or manually.
 ### 01 — Maximum Velocity (V₁ ≤ V<sub>max</sub>/2)
 ```
->> ./main.o  1 0.3 0.3 0.6 && python plot.a
+>> ./main.o  1 0.3 0.3 0.6 && python plot.py
 ```
 ![Test01](./tests/test01.png)
 ### 02 — Limited Velocity (V₁ > V<sub>max</sub>/2)
 ```
->> ./main.o  0.4 0.3 0.3 0.6 && python plot.a
+>> ./main.o  0.4 0.3 0.3 0.6 && python plot.py
 ```
 ![Test02](./tests/test02.png)
 ### 03 — Limited Velocity (S1 + S2 + S3 > S/2)
 ```
->> ./main.o  0.4 0.1 0.3 0.6 && python plot.a
+>> ./main.o  0.4 0.1 0.3 0.6 && python plot.py
 ```
 ![Test03](./tests/test03.png)
 ### 04 — Limited Acceleration (S1 + S3 > S/2)
 ```
->> ./main.o  0.01 0.166 0.5 0.1 && python plot.a
+>> ./main.o  0.01 0.166 0.5 0.1 && python plot.py
 ```
 ![Test04](./tests/test04.png)
 ## REFERENCE
 
-A NEW VELOCITY PROFILE
-GENERATION FOR HIGH
-EFFICIENCY CNC MACHINING
-APPLICATION, NG YU KI 2008
+Ng Yu Ki (2008). "A New Velocity Profile Generation for High-Efficiency CNC Machining Applications."
