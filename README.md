@@ -47,17 +47,17 @@ Total time is 3.166667
 
 To cover 100% of the code, 4 diferent inputs are required based on the flow chart.
 The tests may be executed with **./test.sh** or manually.
-### 01 — Maximum velocity (V₁ ≤ V<sub>max</sub>/2)
+### 01 — Maximum Velocity (V₁ ≤ V<sub>max</sub>/2)
 ```
 >> ./main.o  1 0.3 0.3 0.6 && python plot.a
 ```
 ![Test01](./tests/test01.png)
-### 02 — Limited Velocity, low acceleration (V₁ > V<sub>max</sub>/2)
+### 02 — Limited Velocity (V₁ > V<sub>max</sub>/2)
 ```
 >> ./main.o  0.4 0.3 0.3 0.6 && python plot.a
 ```
 ![Test02](./tests/test02.png)
-### 03 — Limited Velocity, high acceleration (S1 + S2 + S3 > S/2)
+### 03 — Limited Velocity (S1 + S2 + S3 > S/2)
 ```
 >> ./main.o  0.4 0.1 0.3 0.6 && python plot.a
 ```
