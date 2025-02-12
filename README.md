@@ -2,7 +2,7 @@
 
 Takes 4 parameters, displacement expected and velocity, acceleration and jerk limits, then calculates time of each of the 7 constant jerk segments to arrive at a continuous acceleration curve for movement, also known as **S-curve**.
 
-The time results of **calculate_time_1d()** can generate a **csv** with all motion profile curves using **generate_curve_1d()**, and visualized with the Python script **Plot.py**.
+The time results of ```calculate_time_1d()``` can generate a **csv** with all motion profile curves using ```generate_curve_1d()```, and visualized with the Python script ```Plot.py```.
 
 #### Requirements:
 1. GCC
@@ -17,7 +17,7 @@ The time results of **calculate_time_1d()** can generate a **csv** with all moti
 ```
 
 ## Run:
-
+```main.o``` takes 4 arguments, displacent, maximum velocity, maximum acceleration and maximum jerk:
 ```
 >> ./main.o  0.5 0.3 0.3 0.6 && python plot.py
 Displacement is 0.500000 m
@@ -50,7 +50,7 @@ Total time is 3.166667
 ## Tests
 
 To cover 100% of the code, 4 diferent inputs are required based on the flow chart.
-The tests may be executed with **./test.sh** or manually.
+The tests may be executed with ```./test.sh``` or manually.
 ### 01 — Maximum Velocity (V₁ ≤ V<sub>max</sub>/2)
 ```
 >> ./main.o  1 0.3 0.3 0.6 && python plot.a
