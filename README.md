@@ -4,6 +4,10 @@ Takes 4 parameters, displacement expected and velocity, acceleration and jerk li
 
 The time results of **calculate_time_1d()** can generate a **csv** with all motion profile curves using **generate_curve_1d()**, and visualized with the Python script **Plot.py**.
 
+#### Requirements:
+1. GCC
+2. Python3 with Matplotlib and Pandas installed
+
 ## Flow chart:
 ![Flow Chart](./flowchart.png)
 
