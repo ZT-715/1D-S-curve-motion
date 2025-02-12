@@ -1,13 +1,21 @@
-# Velocity Profile
-Compile:
+# Velocity Profile calculator
+
+Takes 4 parameters, displacement expected and velocity, acceleration and jerk limits, then calculates time of each of the 7 constant jerk segments to arrive at a continuous acceleration curve for movement, also known as **S-curve**.
+
+The time results of **calculate_time_1d()** can generate a **csv** with all motion profile curves using **generate_curve_1d()**, and visualized with the Python script **Plot.py**.
+
+## Flow chart:
+![Flow Chart](./flowchart.png)
+
+## Compile:
 ```
->> gcc main.c -o main.a -std=c99 -Wall -pedantic
+>> gcc main.c -o main.o  -std=c99 -Wall -pedantic
 ```
 
-Run:
+## Run:
 
 ```
->> ./main.a 0.5 0.3 0.3 0.6 && python plot.py
+>> ./main.o  0.5 0.3 0.3 0.6 && python plot.py
 Displacement is 0.500000 m
 Velocity is     0.300000 m/s
 Acceleration is 0.300000 m/s2
@@ -33,11 +41,35 @@ Time  6: 0.500000
 Total time is 3.166667
 ```
 
-![plot](./result_V2/motion_plot.png)
+![Output Example](./result_V2/motion_plot.png)
 
-# REFERENCE
+## Tests
+
+To cover 100% of the code, 4 diferent inputs are required based on the flow chart.
+The tests may be executed with **./test.sh** or manually.
+### 01 — Maximum velocity (V₁ ≤ V<sub>max</sub>/2)
+```
+>> ./main.o  1 0.3 0.3 0.6 && python plot.a
+```
+![Test01](./tests/test01.png)
+### 02 — Limited Velocity, low acceleration (V₁ > V<sub>max</sub>/2)
+```
+>> ./main.o  0.4 0.3 0.3 0.6 && python plot.a
+```
+![Test02](./tests/test02.png)
+### 03 — Limited Velocity, high acceleration (S1 + S2 + S3 > S/2)
+```
+>> ./main.o  0.4 0.1 0.3 0.6 && python plot.a
+```
+![Test03](./tests/test03.png)
+### 04 — Limited Acceleration (S1 + S3 > S/2)
+```
+>> ./main.o  0.01 0.166 0.5 0.1 && python plot.a
+```
+![Test04](./tests/test04.png)
+## REFERENCE
 
 A NEW VELOCITY PROFILE
 GENERATION FOR HIGH
 EFFICIENCY CNC MACHINING
-APPLICATION, NG YU KI
+APPLICATION, NG YU KI 2008

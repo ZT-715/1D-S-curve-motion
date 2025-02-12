@@ -19,14 +19,14 @@ float* calculate_time_1d(float time[6],
     time[0] = acceleration_max / jerk_max;
     velocity[0] = jerk_max*time[0]*time[0] / 2;
 
-    printf("Start: \ntime[0] = %f \nvelocity[0] = %f\n", time[0], velocity[0]);
+    printf("Start calculate_time_1d(): \ntime[0] = %f \nvelocity[0] = %f\n", time[0], velocity[0]);
 
     // evaluate second segment necessity - constant acceleration
     if (velocity[0] >= velocity_max/2) {
         time[0] = sqrtf(velocity_max / jerk_max);
         time[1] = 0.0f;
 
-        printf("seg. II.: \n time[0] = %f \ntime[1] = %f \n\n", time[0], time[1]);
+        printf("V1 >= Vmax/2: \n time[0] = %f \ntime[1] = %f \n\n", time[0], time[1]);
     }
     else {
          time[1] = (velocity_max - 2*velocity[0]) / acceleration_max; // ac_max == ac[1]
@@ -39,7 +39,7 @@ float* calculate_time_1d(float time[6],
     velocity[1] = acceleration_peak*time[1] + velocity[0];
     velocity[2] = acceleration_peak*time[2] - jerk_max*time[2]*time[2] / 2 + velocity[1];
 
-    printf("velocity[0] = %f \n", velocity[0]);
+    printf("\nvelocity[0] = %f \n", velocity[0]);
     printf("velocity[1] = %f \n", velocity[1]);
     printf("velocity[2] = %f \n", velocity[2]);
 
@@ -48,14 +48,7 @@ float* calculate_time_1d(float time[6],
     S2 = (acceleration_peak / 2) * time[1] * time[1] + velocity[0] * time[1];
     S3 = (acceleration_peak*time[0]*time[0])/2 - (jerk_max*time[0]*time[0]*time[0])/6 + velocity[1]*time[0];
 
-    printf("\n(S1+S3)+S2 = %f+%f = %f \n", 2*velocity[0]*time[0], time[1]*(acceleration_max*time[1]/2 + velocity[0]), 2*velocity[0]*time[0] + time[1]*(acceleration_max*time[1]/2 + velocity[0]));
-    printf("S1+S2+S3 = %f+%f+%f = %f \n",S1,S2,S3, S1 + S2 + S3);
-    printf("time[0] = %f \nvelocity[0] = %f \n\n", time[0], velocity[0]);
-
-
-    if (velocity[0] >= velocity_max/2) {
-        fprintf(stderr, "velocity[2] %f greater than limit %f \n", velocity[2], velocity_max);
-    }
+    printf("\nS1+S2+S3 = %f+%f+%f = %f \n",S1,S2,S3, S1 + S2 + S3);
 
     // If the 3 first segments are more than half the displacement
     // but the first and third are not, recalculate second segment
@@ -85,12 +78,9 @@ float* calculate_time_1d(float time[6],
     }
     else {
         time[3] = (displacement - 2*(S1 + S2 + S3))/velocity[2];
-//        time[3] = (displacement -
-//             2*(2*velocity[0]*time[0] + time[1]*(acceleration_max*time[1]/2 + velocity[0]))
-//         ) / velocity[2];
-        // printf("Displacement of segment 4: %f \n", displacement - 2*(2*velocity[0]*time[0] + time[1]*(acceleration_max*time[1]/2 + velocity[0])));
+
         printf("S4 = %f \n", displacement - 2*(S1 + S2 + S3));
-        printf("Const. vel. I: %f \n", velocity[2]);
+        printf("velocity[4] = %f \n", velocity[4]);
 
     }
 
@@ -129,10 +119,9 @@ void generate_curve_1d(float time[6],
     int const steps4 = (int) (time[3]/time_delta) + steps3;
     int const steps5 = (int) (time[4]/time_delta) + steps4;
     int const steps6 = (int) (time[5]/time_delta) + steps5;
-    int const steps7 = step_total;
+    // int const steps7 = step_total;
 
     float const acceleration_peak = time[0]*jerk_max;
-    printf("acceleration_peak = %f \n", acceleration_peak);
 
     float const velocity1 = jerk_max*time[0]*time[0] / 2;
     float const velocity2 = acceleration_peak*time[1] + velocity1;
@@ -140,7 +129,7 @@ void generate_curve_1d(float time[6],
     float const velocity4 = velocity3;
     float const velocity5 = - jerk_max*time[4]*time[4] / 2 + velocity4;
     float const velocity6 = - acceleration_peak*time[5] + velocity5;
-    float const velocity7 = 0.0f;
+    // float const velocity7 = 0.0f;
 
     int step_counter = 0;
 
@@ -211,9 +200,6 @@ void generate_curve_1d(float time[6],
             step_counter++;
         }
     }
-    if (steps7 != step_counter - 1) {
-        fprintf(stderr, "Error in generate_curve_1d: step total not equal steps counted. (%d != %d) \n", steps7, step_counter - 1);
-    }
 
     FILE* file = fopen("output.csv", "w");
     fprintf(file, "time(s);position(m);velocity(m/s);acceleration(m*s^-2);jerk(m*s^-3)\n");
@@ -246,13 +232,14 @@ int main(int argc, char** argv) {
         jerk_max = strtof(argv[4], NULL);
 //    }
 
-    printf("Displacement is       %f m   \n", displacement);
+    printf("\nDisplacement is       %f m   \n", displacement);
     printf("Velocity limit        %f m/s \n", velocity_max);
     printf("Acceleration limit is %f m/s2\n", acceleration_max);
     printf("Jerk limit is         %f m/s3\n\n", jerk_max);
 
     calculate_time_1d(time, displacement, velocity_max, acceleration_max, jerk_max);
 
+    printf("\n\n");
     for (int i = 0; i < 7; i++) {
         printf("Time %2d: %f\n", i, time[i]);
     }
