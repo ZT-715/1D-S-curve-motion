@@ -102,7 +102,7 @@ void generate_curve_1d(float time[6],
 
     float time_total = 0.0f;
 
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 7; i++) {
         time_total += time[i];
     }
 
