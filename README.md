@@ -1,4 +1,4 @@
-# Velocity Profile calculator
+# Velocity Profile Calculator — constant jerk 1D motion
 
 Takes 4 parameters, displacement expected and velocity, acceleration and jerk limits, then calculates time of each of the 7 constant jerk segments to arrive at a continuous acceleration curve for movement, also known as **S-curve**.
 
@@ -19,30 +19,36 @@ The time results of ```calculate_time_1d()``` can generate a **csv** with all mo
 ## Run:
 ```main.o``` takes 4 arguments, displacent, maximum velocity, maximum acceleration and maximum jerk:
 ```
->> ./main.o  0.5 0.3 0.3 0.6 && python plot.py
-Displacement is 0.500000 m
-Velocity is     0.300000 m/s
-Acceleration is 0.300000 m/s2
-Jerk is         0.600000 m/s3
+>> ./main.o  0.5 0.3 0.3 0.6                    
 
-Start:
-time[0] = 0.500000
-velocity[0] = 0.075000
-velocity[0] = 0.075000
-velocity[1] = 0.225000
-velocity[2] = 0.300000
-S1+S2+S3 = 0.012500+0.075000+0.137500 = 0.225000
-S4 = 0.050000
-Const. vel. I: 0.300000
-Time  0: 0.500000
-Time  1: 0.500000
-Time  2: 0.500000
-Time  3: 0.166667
-Time  4: 0.500000
-Time  5: 0.500000
-Time  6: 0.500000
+Displacement is       0.500000 m   
+Velocity limit        0.300000 m/s 
+Acceleration limit is 0.300000 m/s2
+Jerk limit is         0.600000 m/s3
+
+Start calculate_time_1d(): 
+time[0] = 0.500000 
+velocity1 = 0.075000
+
+velocity1 = 0.075000 
+velocity2 = 0.225000 
+velocity3 = 0.300000 
+
+S1+S2+S3 = 0.012500+0.075000+0.137500 = 0.225000 
+S4 = 0.050000 
+velocity4 = 0.000000 
+
+
+Time  0: 0.500000 s
+Time  1: 0.500000 s
+Time  2: 0.500000 s
+Time  3: 0.166667 s
+Time  4: 0.500000 s
+Time  5: 0.500000 s
+Time  6: 0.500000 s
 
 Total time is 3.166667
+File output.csv generated.
 ```
 
 ![Output Example](./result_V2/motion_plot.png)
