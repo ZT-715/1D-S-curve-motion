@@ -1,8 +1,15 @@
 # Velocity Profile Calculator — limited jerk 1D motion
 
-Takes 4 parameters, displacement expected and velocity, acceleration and jerk limits, then calculates time of each of the 7 constant jerk segments to arrive at a continuous acceleration curve for movement, also known as **S-curve**.
+Main takes 4 parameters: 
 
-The time results of ```calculate_time_1d()``` can generate a **csv** with all motion profile curves using ```generate_curve_1d()```, and visualized with the Python script ```Plot.py```.
+- displacement expected;
+- velocity limit; 
+- acceleration limit; 
+- jerk limit.
+
+From the parameters ```calculate_time_1d()``` then calculates time of each of the 7 constant jerk segments to arrive at a continuous acceleration curve for movement, also known as **S-curve**.
+
+The time results can generate a **csv** with all motion profile curves using ```generate_curve_1d()```, to be visualized with the Python script ```Plot.py```.
 
 #### Requirements:
 1. GCC
@@ -19,7 +26,7 @@ The time results of ```calculate_time_1d()``` can generate a **csv** with all mo
 ## Run:
 ```main.o``` takes 4 arguments, displacent, maximum velocity, maximum acceleration and maximum jerk:
 ```
->> ./main.o  0.5 0.3 0.3 0.6                    
+>> ./main.o  0.5 0.3 0.3 0.6 && python plot.py                  
 
 Displacement is       0.500000 m   
 Velocity limit        0.300000 m/s 
