@@ -1,4 +1,4 @@
-# Velocity Profile Calculator — constant jerk 1D motion
+# Velocity Profile Calculator — limited jerk 1D motion
 
 Takes 4 parameters, displacement expected and velocity, acceleration and jerk limits, then calculates time of each of the 7 constant jerk segments to arrive at a continuous acceleration curve for movement, also known as **S-curve**.
 
