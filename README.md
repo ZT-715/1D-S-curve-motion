@@ -74,7 +74,7 @@ The tests may be executed with ```./test.sh``` or manually.
 >> ./main.o  0.4 0.3 0.3 0.6 && python plot.py
 ```
 ![Test02](./tests/test02.png)
-### 03 — Limited Velocity (S1 + S2 + S3 > S/2)
+### 03 — Limited Acceleration (S1 + S2 + S3 > S/2)
 ```
 >> ./main.o  0.4 0.1 0.3 0.6 && python plot.py
 ```
