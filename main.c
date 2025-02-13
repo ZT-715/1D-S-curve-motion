@@ -13,40 +13,40 @@ float* calculate_time_1d(float time[6],
                          const float acceleration_max,
                          const float jerk_max) {
 
-    float velocity[6];
+    float velocity1, velocity2, velocity3, velocity4 = 0.0f;
     float S1, S2, S3;
 
     time[0] = acceleration_max / jerk_max;
-    velocity[0] = jerk_max*time[0]*time[0] / 2;
+    velocity1 = jerk_max*time[0]*time[0] / 2;
 
-    printf("Start calculate_time_1d(): \ntime[0] = %f \nvelocity[0] = %f\n", time[0], velocity[0]);
+    printf("Start calculate_time_1d(): \ntime[0] = %f \nvelocity1 = %f\n", time[0], velocity1);
 
     // evaluate second segment necessity - constant acceleration
-    if (velocity[0] >= velocity_max/2) {
+    if (velocity1 >= velocity_max/2) {
         time[0] = sqrtf(velocity_max / jerk_max);
         time[1] = 0.0f;
 
         printf("V1 >= Vmax/2: \n time[0] = %f \ntime[1] = %f \n\n", time[0], time[1]);
     }
     else {
-         time[1] = (velocity_max - 2*velocity[0]) / acceleration_max; // ac_max == ac[1]
+         time[1] = (velocity_max - 2*velocity1) / acceleration_max; // ac_max == ac[1]
     }
 
     time[2] = time[0];
     float acceleration_peak = time[0]*jerk_max;
 
-    velocity[0] = jerk_max*time[0]*time[0] / 2;
-    velocity[1] = acceleration_peak*time[1] + velocity[0];
-    velocity[2] = acceleration_peak*time[2] - jerk_max*time[2]*time[2] / 2 + velocity[1];
+    velocity1 = jerk_max*time[0]*time[0] / 2;
+    velocity2 = acceleration_peak*time[1] + velocity1;
+    velocity3 = acceleration_peak*time[2] - jerk_max*time[2]*time[2] / 2 + velocity2;
 
-    printf("\nvelocity[0] = %f \n", velocity[0]);
-    printf("velocity[1] = %f \n", velocity[1]);
-    printf("velocity[2] = %f \n", velocity[2]);
+    printf("\nvelocity1 = %f \n", velocity1);
+    printf("velocity2 = %f \n", velocity2);
+    printf("velocity3 = %f \n", velocity3);
 
 
     S1  = (jerk_max / 6) * time[0] * time[0] * time[0];
-    S2 = (acceleration_peak / 2) * time[1] * time[1] + velocity[0] * time[1];
-    S3 = (acceleration_peak*time[0]*time[0])/2 - (jerk_max*time[0]*time[0]*time[0])/6 + velocity[1]*time[0];
+    S2 = (acceleration_peak / 2) * time[1] * time[1] + velocity1 * time[1];
+    S3 = (acceleration_peak*time[0]*time[0])/2 - (jerk_max*time[0]*time[0]*time[0])/6 + velocity2*time[0];
 
     printf("\nS1+S2+S3 = %f+%f+%f = %f \n",S1,S2,S3, S1 + S2 + S3);
 
@@ -77,10 +77,10 @@ float* calculate_time_1d(float time[6],
         time[3] = 0.0f;
     }
     else {
-        time[3] = (displacement - 2*(S1 + S2 + S3))/velocity[2];
+        time[3] = (displacement - 2*(S1 + S2 + S3))/velocity3;
 
         printf("S4 = %f \n", displacement - 2*(S1 + S2 + S3));
-        printf("velocity[4] = %f \n", velocity[4]);
+        printf("velocity4 = %f \n", velocity4);
 
     }
 
@@ -102,7 +102,7 @@ void generate_curve_1d(float time[6],
 
     float time_total = 0.0f;
 
-    for (int i = 0; i < 7; i++) {
+    for (int i = 0; i < 6; i++) {
         time_total += time[i];
     }
 
@@ -112,6 +112,10 @@ void generate_curve_1d(float time[6],
     float* const velocity_curve = malloc(sizeof(float)*step_total);
     float* const acceleration_curve = malloc(sizeof(float)*step_total);
     float* const jerk_curve = malloc(sizeof(float)*step_total);
+
+    if (position_curve == NULL || velocity_curve == NULL || acceleration_curve == NULL || jerk_curve == NULL) {
+        fprintf(stderr, "Error in allocating memory for curve data.\n");
+    }
 
     int const steps1 = (int) (time[0]/time_delta) - 1;
     int const steps2 = (int) (time[1]/time_delta) + steps1;
@@ -202,6 +206,11 @@ void generate_curve_1d(float time[6],
     }
 
     FILE* file = fopen("output.csv", "w");
+
+    if (file == NULL) {
+        fprintf(stderr, "Error opening output.csv\n");
+    }
+
     fprintf(file, "time(s);position(m);velocity(m/s);acceleration(m*s^-2);jerk(m*s^-3)\n");
 
     for (int i = 0; i < step_total; i++) {
@@ -214,7 +223,7 @@ void generate_curve_1d(float time[6],
     free(jerk_curve);
     fclose(file);
 
-    printf("File output.csv generated successfully.");
+    printf("File output.csv generated.\n\n");
 }
 
 int main(int argc, char** argv) {
@@ -241,7 +250,7 @@ int main(int argc, char** argv) {
 
     printf("\n\n");
     for (int i = 0; i < 7; i++) {
-        printf("Time %2d: %f\n", i, time[i]);
+        printf("Time %2d: %f s\n", i, time[i]);
     }
 
     float total_time = 0.0f;
