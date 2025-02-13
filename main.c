@@ -5,7 +5,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h> // C99 or greater
-#include <stdlib.h>
 
 float* calculate_time_1d(float time[6],
                          const float displacement,
